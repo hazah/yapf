@@ -1,17 +1,22 @@
 <?php
+/**
+ * @file
+ *
+ * This plugin helps with creation of the main page content renderable array for
+ * output.
+ */
 
 function more_content() {
   global $content, $post_index;
 
   if (empty($content)) {
-    if (file_exists('./site/content.php')) {
-      $content = require_once './site/content.php';
-    }
-    else {
+    do_action('content');
+    if (empty($content)) {
       $content = array(
+        // This is the basic content object used by this plugin.
         (object) array(
-          'title' => 'Content',
-          'body' => 'No Content',
+          'title' => 'No Content available',
+          'body' => 'The content plugin is functional, but it does not have any content to display',
         )
       );
     }
@@ -65,11 +70,20 @@ function content() {
       'format' => content_type(),
     ));
   }
-  
+
   add_action('page_title', function () {
     global $page_title;
-    
+
     $page_title = content_title();
+  });
+
+  add_action('page_body', function () {
+    global $page_body;
+    global $output;
+
+    $page_body = array('content' => $output['content']);
+
+    unset($output['content']);
   });
 }
 
@@ -99,5 +113,5 @@ if (!function_exists('render_alter_content_body')) {
 
 return array(
   'initialize' => 'content',
-  'requires' => array('actions'),
+  'requires' => array('actions', 'output', 'render'),
 );

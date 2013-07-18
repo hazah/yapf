@@ -1,51 +1,64 @@
 <?php
+/**
+ * @file
+ *
+ * This plugin helps with creation of a complete page renderable array for output.
+ */
 
 function page_title() {
   global $page_title;
-  
+
   do_action('page_title');
-  
+
   if (!empty($page_title)) {
     return $page_title;
   }
-  
-  return 'Default Title';
+
+  return 'Page Title Not Set';
 }
 
 function page_head() {
   global $output;
-  //print_r($theme['page']['title']); die;
-  $content = array('title' => $output['page']['title']);
-  unset($output['page']['title']);
-  
+  global $page_head;
+
+  do_action('page_head');
+
+  if (!empty($page_head)) {
+    return $page_head;
+  }
+
   return $content;
 }
 
 function page_body() {
   global $output;
   global $page_body;
-  
+
   do_action('page_body');
-  
+
   if (!empty($page_body)) {
     return $page_body;
   }
-  elseif (array_key_exists('content', $output)) {
-    $content = $output['content'];
-    unset($output['content']);
-    return $content;
-  }
-  
-  return 'No page content';
+
+  return 'The page plugin is functional, but it does not have any content to display';
 }
 
 
 function page() {
+  add_action('page_head', function () {
+    global $page_head;
+    global $output;
+
+    $page_head = array('title' => $output['page']['title']);
+
+    unset($output['page']['title']);
+  });
+
   output('title', array(
     'plugin' => 'page',
     'content' => page_title(),
   ));
-  
+
   output('head', array(
     'plugin' => 'page',
     'content' => page_head(),
@@ -94,5 +107,5 @@ if (!function_exists('render_alter_page_head')) {
 return array(
   'initialize' => 'page',
   'weight' => 10,
-  'requires' => array('actions'),
+  'requires' => array('actions', 'output', 'render'),
 );

@@ -2,7 +2,7 @@
 /**
  * @file
  *
- * This plugin helps with creation of renderable arrays for output. 
+ * This plugin helps with creation of renderable arrays for output.
  */
 
 
@@ -32,5 +32,3 @@ function output_alter($plugin, $type, $format, $content) {
   }
   return $content;
 }
-
-return false;

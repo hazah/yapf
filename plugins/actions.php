@@ -2,12 +2,12 @@
 /**
  * @file
  *
- * This plugin enables a hook system. 
+ * This plugin enables a hook system.
  */
 
 function add_action($name, $callback, $weight = 0) {
   global $actions;
-  
+
   if (is_callable($callback)) {
     $actions[$name][$weight][] = $callback;
   }
@@ -16,10 +16,10 @@ function add_action($name, $callback, $weight = 0) {
 
 function do_action() {
   global $actions;
-  
+
   $args = func_get_args();
   $name = array_shift($args);
-  
+
   if (isset($actions[$name])) {
     ksort($actions[$name]);
     foreach ($actions[$name] as $handlers) {
@@ -29,5 +29,3 @@ function do_action() {
     }
   }
 }
-
-return false;
