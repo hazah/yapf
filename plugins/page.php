@@ -1,39 +1,70 @@
 <?php
 
 function page_title() {
-  return 'Not Found';
+  global $page_title;
+  
+  do_action('page_title');
+  
+  if (!empty($page_title)) {
+    return $page_title;
+  }
+  
+  return 'Default Title';
 }
 
-function page_content() {
-  return 'Page Not Found';
+function page_body() {
+  global $theme;
+  global $page_body;
+  
+  do_action('page_body');
+  
+  if (!empty($page_body)) {
+    return $page_body;
+  }
+  elseif (array_key_exists('content', $theme)) {
+    $content = $theme['content'];
+    unset($theme['content']);
+    return $content;
+  }
+  
+  return 'No page content';
 }
 
 
 function page() {
-  theme('page_title', array(
+  theme('title', array(
     'plugin' => 'page',
     'content' => page_title(),
   ));
 
-  theme('page_content', array(
+  theme('body', array(
     'plugin' => 'page',
-    'content' => page_content(),
+    'content' => page_body(),
   ));
 }
 
 
-if (!function_exists('theme_page')) {
-  function theme_page($type, $format, $content) {
+if (!function_exists('theme_alter_page')) {
+  function theme_alter_page($type, $format, $content) {
     switch ($type) {
-      case 'page_title':
+      case 'title':
         $content = '<title>' . $content . '</title>';
         break;
-      case 'page_content':
-        $content = '<body>' . $content . '</body>';
+      case 'body':
+        $content = array('content' => $content);
         break;
     }
     return $content;
   }
 }
 
-return 10;
+if (!function_exists('render_alter_page')) {
+  function render_alter_page($renderable) {
+    return '<body>' . render($renderable) . '</body>';
+  }
+}
+
+return array(
+  'initialize' => 'page',
+  'weight' => 10,
+);

@@ -12,19 +12,15 @@ function theme($type, $settings) {
 
   extract($settings);
 
-  if (!isset($theme[$plugin][$type])) {
-    $theme[$plugin][$type] = '';
-  }
-
-  $theme[$plugin][$type] .= theme_override($plugin, $type, $format, $content);
+  $theme[$plugin][$type][] = theme_alter($plugin, $type, $format, $content);
 }
 
-function theme_override($plugin, $type, $format, $content) {
-  $function = "theme_{$plugin}_{$type}";
+function theme_alter($plugin, $type, $format, $content) {
+  $function = "theme_alter_{$plugin}_{$type}";
   if (function_exists($function)) {
     $content = $function($format, $content);
   }
-  $function = "theme_{$plugin}";
+  $function = "theme_alter_{$plugin}";
   if (function_exists($function)) {
     $content = $function($type, $format, $content);
   }

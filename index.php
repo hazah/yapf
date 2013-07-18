@@ -3,26 +3,31 @@
 if ($handle = opendir('./plugins')) {
   while (false !== ($entry = readdir($handle))) {
     if ($entry != "." && $entry != "..") {
-      $weight = require_once './plugins/' . $entry;
-      if ($weight !== false) {
-        $plugins[$weight] = str_replace('.php', '', $entry);
+      $info = require_once './plugins/' . $entry;
+      if ($info !== false) {
+        $info += array(
+          'weight' => 0,
+          'name' => str_replace('.php', '', $entry),
+        );
+        $plugins[$info['weight']] = $info;
       }
     }
   }
   closedir($handle);
   unset($handle);
   unset($entry);
-  unset($weight);
 
   ksort($plugins);
-  foreach ($plugins as $plugin) {
-    $plugin();
+  foreach ($plugins as $info) {
+    if (array_key_exists('initialize', $info) && function_exists($info['initialize'])) {
+      $info['initialize']();
+    }
   }
-  unset($plugin);
+  unset($info);
 }
 
-if (isset($theme) && array_key_exists('page', $theme)) {
-  extract($theme['page']);
+if (isset($theme) && array_key_exists('page', $theme)) {//print_r($theme);die;
+  extract($theme);
   unset($theme);
 }
 else {
@@ -33,7 +38,7 @@ else {
 ?>
 <html>
 <head>
-  <?= $page_title ?>
+  <?= render($page['title']) ?>
 </head>
-<?= $page_content ?>
+<?= render(array('page' => $page['body'])) ?>
 </html>

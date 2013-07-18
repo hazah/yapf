@@ -65,11 +65,17 @@ function content() {
       'format' => content_type(),
     ));
   }
+  
+  add_action('page_title', function () {
+    global $page_title;
+    
+    $page_title = content_title();
+  });
 }
 
 
-if (!function_exists('theme_content')) {
-  function theme_content($type, $format, $content) {
+if (!function_exists('theme_alter_content')) {
+  function theme_alter_content($type, $format, $content) {
     switch ($type) {
       case 'title':
         $content = '<h1>' . $content . '</h1>';
@@ -82,4 +88,6 @@ if (!function_exists('theme_content')) {
   }
 }
 
-return -0;
+return array(
+  'initialize' => 'content',
+);
