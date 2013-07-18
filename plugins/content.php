@@ -55,11 +55,11 @@ function content_body() {
 function content() {
   while (more_content()) {
     get_content();
-    theme('title', array(
+    output('title', array(
       'plugin' => 'content',
       'content' => content_title(),
     ));
-    theme('body', array(
+    output('body', array(
       'plugin' => 'content',
       'content' => content_body(),
       'format' => content_type(),
@@ -73,8 +73,8 @@ function content() {
   });
 }
 
-if (!function_exists('theme_alter_content')) {
-  function theme_alter_content($type, $format, $content) {
+if (!function_exists('output_alter_content')) {
+  function output_alter_content($type, $format, $content) {
     switch ($type) {
       case 'title':
         break;
@@ -99,4 +99,5 @@ if (!function_exists('render_alter_content_body')) {
 
 return array(
   'initialize' => 'content',
+  'requires' => array('actions'),
 );

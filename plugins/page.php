@@ -13,16 +13,16 @@ function page_title() {
 }
 
 function page_head() {
-  global $theme;
+  global $output;
   //print_r($theme['page']['title']); die;
-  $content = array('title' => $theme['page']['title']);
-  unset($theme['page']['title']);
+  $content = array('title' => $output['page']['title']);
+  unset($output['page']['title']);
   
   return $content;
 }
 
 function page_body() {
-  global $theme;
+  global $output;
   global $page_body;
   
   do_action('page_body');
@@ -30,9 +30,9 @@ function page_body() {
   if (!empty($page_body)) {
     return $page_body;
   }
-  elseif (array_key_exists('content', $theme)) {
-    $content = $theme['content'];
-    unset($theme['content']);
+  elseif (array_key_exists('content', $output)) {
+    $content = $output['content'];
+    unset($output['content']);
     return $content;
   }
   
@@ -41,25 +41,25 @@ function page_body() {
 
 
 function page() {
-  theme('title', array(
+  output('title', array(
     'plugin' => 'page',
     'content' => page_title(),
   ));
   
-  theme('head', array(
+  output('head', array(
     'plugin' => 'page',
     'content' => page_head(),
   ));
 
-  theme('body', array(
+  output('body', array(
     'plugin' => 'page',
     'content' => page_body(),
   ));
 }
 
 
-if (!function_exists('theme_alter_page')) {
-  function theme_alter_page($type, $format, $content) {
+if (!function_exists('output_alter_page')) {
+  function output_alter_page($type, $format, $content) {
     switch ($type) {
       case 'title':
         break;
@@ -94,4 +94,5 @@ if (!function_exists('render_alter_page_head')) {
 return array(
   'initialize' => 'page',
   'weight' => 10,
+  'requires' => array('actions'),
 );
