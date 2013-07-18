@@ -48,7 +48,7 @@ if (!function_exists('theme_alter_page')) {
   function theme_alter_page($type, $format, $content) {
     switch ($type) {
       case 'title':
-        $content = '<title>' . $content . '</title>';
+        $content = array('head' => array('title' => $content));
         break;
       case 'body':
         $content = array('content' => $content);
@@ -58,9 +58,21 @@ if (!function_exists('theme_alter_page')) {
   }
 }
 
-if (!function_exists('render_alter_page')) {
-  function render_alter_page($renderable) {
+if (!function_exists('render_alter_page_body')) {
+  function render_alter_page_body($renderable) {
     return '<body>' . render($renderable) . '</body>';
+  }
+}
+
+if (!function_exists('render_alter_page_head')) {
+  function render_alter_page_head($renderable) {
+    return '<head>' . render($renderable) . '</head>';
+  }
+}
+
+if (!function_exists('render_alter_page_title')) {
+  function render_alter_page_title($renderable) {
+    return '<title>' . render($renderable) . '</title>';
   }
 }
 
