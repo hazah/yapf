@@ -31,11 +31,13 @@ if ($handle = opendir('./plugins')) {
 }
 
 if (!isset($theme)) {
-  $page_title = 'Failure';
-  $page_content = '$theme variable was not set!';
+  trigger_error('$theme variable was not set!', E_USER_ERROR);
 }
+
 /** End of YAPF */
-print_r($theme);
+
+#print_r($theme);
+#die;
 // Below is the default output of the framework
 ?>
 <html>

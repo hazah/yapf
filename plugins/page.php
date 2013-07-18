@@ -12,6 +12,15 @@ function page_title() {
   return 'Default Title';
 }
 
+function page_head() {
+  global $theme;
+  //print_r($theme['page']['title']); die;
+  $content = array('title' => $theme['page']['title']);
+  unset($theme['page']['title']);
+  
+  return $content;
+}
+
 function page_body() {
   global $theme;
   global $page_body;
@@ -36,6 +45,11 @@ function page() {
     'plugin' => 'page',
     'content' => page_title(),
   ));
+  
+  theme('head', array(
+    'plugin' => 'page',
+    'content' => page_head(),
+  ));
 
   theme('body', array(
     'plugin' => 'page',
@@ -48,9 +62,10 @@ if (!function_exists('theme_alter_page')) {
   function theme_alter_page($type, $format, $content) {
     switch ($type) {
       case 'title':
-        $content = array('head' => array('title' => $content));
         break;
       case 'body':
+        // Retain the plugin information so that the content plugin can take
+        // advantage of it (if it exists).
         $content = array('content' => $content);
         break;
     }
@@ -58,21 +73,21 @@ if (!function_exists('theme_alter_page')) {
   }
 }
 
+if (!function_exists('render_alter_page_title')) {
+  function render_alter_page_title($renderable) {
+    return '<title>' . render($renderable, 'page') . '</title>';
+  }
+}
+
 if (!function_exists('render_alter_page_body')) {
   function render_alter_page_body($renderable) {
-    return '<body>' . render($renderable) . '</body>';
+    return '<body>' . render($renderable, 'page') . '</body>';
   }
 }
 
 if (!function_exists('render_alter_page_head')) {
   function render_alter_page_head($renderable) {
-    return '<head>' . render($renderable) . '</head>';
-  }
-}
-
-if (!function_exists('render_alter_page_title')) {
-  function render_alter_page_title($renderable) {
-    return '<title>' . render($renderable) . '</title>';
+    return '<head>' . render($renderable, 'page') . '</head>';
   }
 }
 

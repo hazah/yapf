@@ -73,18 +73,27 @@ function content() {
   });
 }
 
-
 if (!function_exists('theme_alter_content')) {
   function theme_alter_content($type, $format, $content) {
     switch ($type) {
       case 'title':
-        $content = '<h1>' . $content . '</h1>';
         break;
       case 'body':
-        $content = '<div id="body">' . $content . '</div>';
         break;
     }
     return $content;
+  }
+}
+
+if (!function_exists('render_alter_content_title')) {
+  function render_alter_content_title($renderable) {
+    return '<h1>' . render($renderable, 'content') . '</h1>';
+  }
+}
+
+if (!function_exists('render_alter_content_body')) {
+  function render_alter_content_body($renderable) {
+    return '<div class="content">' . render($renderable, 'content') . '</div>';
   }
 }
 
