@@ -84,19 +84,19 @@ function page() {
     'plugin' => 'page',
     'content' => page_title(),
   ));
-  do_action('page_title_alter', array(&$output['page']['title']));
+  do_action('page_title_output_alter', array(&$output['page']['title']));
 
   output('head', array(
     'plugin' => 'page',
     'content' => page_head(),
   ));
-  do_action('page_head_alter', array(&$output['page']['head']));
+  do_action('page_head_output_alter', array(&$output['page']['head']));
 
   output('body', array(
     'plugin' => 'page',
     'content' => page_body(),
   ));
-  do_action('page_body_alter', array(&$output['page']['body']));
+  do_action('page_body_output_alter', array(&$output['page']['body']));
 }
 
 /** TODO: This is only for documentating the API of this plugin.

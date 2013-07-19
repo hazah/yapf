@@ -119,8 +119,8 @@ function content() {
       'format' => content_type(),
     ));
   }
-  do_action('content_title_alter', array(&$output['content']['title']));
-  do_action('content_body_alter', array(&$output['content']['body']));
+  do_action('content_title_output_alter', array(&$output['content']['title']));
+  do_action('content_body_output_alter', array(&$output['content']['body']));
 
   // Supply the title & body to any page plugin
   add_action('page_title', function () {
