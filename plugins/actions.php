@@ -4,7 +4,6 @@
  *
  * This plugin enables a hook system.
  */
-
 function add_action($name, $callback, $weight = 0) {
   global $actions;
 

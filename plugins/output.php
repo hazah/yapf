@@ -4,8 +4,6 @@
  *
  * This plugin helps with creation of renderable arrays for output.
  */
-
-
 function output($type, $settings) {
   global $output;
 
