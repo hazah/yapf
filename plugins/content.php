@@ -32,7 +32,7 @@ function more_content() {
     }
     $post_index = -1;
   }
-  do_action('content_alter', array(&$content));
+  do_action('content_alter');
 
   return isset($content[++$post_index]);
 }
@@ -54,7 +54,7 @@ function get_content() {
 
   // Make sure to alter only once per post.
   if (!isset($cache[$post_index]) || !$cache[$post_index]) {
-    do_action('content_post_alter', $post);
+    do_action('content_post_alter');
     $cache[$post_index] = true;
   }
 }
@@ -69,7 +69,7 @@ function reset_content() {
   $post_index = -1;
   $post = null;
 
-  do_action('reset_content', array(&$content));
+  do_action('reset_content');
   $cache = array();
 }
 
@@ -154,6 +154,8 @@ if (!function_exists('output_alter_content')) {
   }
 }
 */
+
+// Overridable rendering callbacks.
 
 /**
  * Implements render_alter_PLUGIN_HOOK().

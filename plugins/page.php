@@ -75,7 +75,9 @@ function page() {
 
       unset($output['page']['title']);
     }
-  });
+  // Increase the weight to delay this callback so that other plugins will have
+  // a chance to set the head content
+  }, 10);
 
   // Populate the renderable array
   output('title', array(
@@ -113,7 +115,6 @@ if (!function_exists('output_alter_page')) {
 
 // Overridable rendering callbacks.
 
-
 /**
  * Implements render_alter_PLUGIN_HOOK().
  *
@@ -143,7 +144,7 @@ if (!function_exists('render_alter_page_head')) {
 
 // Plugin info:
 // TODO: Include human readable information so that some other plugin can make
-// use of that information.
+//       use of it.
 return array(
   'initialize' => 'page',
   // Set the weight higher than most plugins so that the initializer runs

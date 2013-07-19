@@ -9,8 +9,6 @@
  * Plugin initializer.
  */
 function preprocess_output() {
-  global $output;
-
   // All we do is call this hook, and this will allow all other plugins to
   // preprocess the array.
   do_action('preprocess_output');

@@ -11,7 +11,7 @@
  */
 
 /** YAPF Begins here */
-if (false && $handle = opendir('./plugins')) {
+if ($handle = opendir('./plugins')) {
   while (false !== ($entry = readdir($handle))) {
     if ($entry != "." && $entry != "..") {
       // Each plugin file could return plugin information. If so, record it.
