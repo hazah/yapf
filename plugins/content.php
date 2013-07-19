@@ -88,7 +88,7 @@ function content_title() {
   global $post;
 
   $title = $post->title;
-  do_action('post_title_alter', $post, array(&$title));
+  do_action('post_title_alter', array(&$title));
 
   return $title;
 }
@@ -97,7 +97,7 @@ function content_body() {
   global $post;
 
   $body = $post->body;
-  do_action('post_body_alter', $post, array(&$body));
+  do_action('post_body_alter', array(&$body));
 
   return $body;
 }
