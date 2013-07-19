@@ -5,7 +5,7 @@
  * This is the front controller.
  *
  * This script makes three assumptions:
- * 1. The '../plugins' directory exists.
+ * 1. The './plugins' directory exists.
  * 2. The $output global variable exists.
  * 3. The render() function exists.
  */
