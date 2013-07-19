@@ -16,6 +16,7 @@ function preprocess_output() {
   do_action('preprocess_output');
 }
 
+
 // Plugin info:
 // TODO: Include human readable information so that some other plugin can make
 // use of that information.

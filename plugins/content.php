@@ -122,7 +122,7 @@ function content() {
   do_action('content_title_alter', array(&$output['content']['title']));
   do_action('content_body_alter', array(&$output['content']['body']));
 
-  // Supply the title & to any page plugin
+  // Supply the title & body to any page plugin
   add_action('page_title', function () {
     global $page_title;
 
@@ -174,6 +174,7 @@ if (!function_exists('render_alter_content_body')) {
     return '<div class="content">' . render($renderable, 'content') . '</div>';
   }
 }
+
 
 // Plugin info:
 // TODO: Include human readable information so that some other plugin can make

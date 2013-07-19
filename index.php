@@ -3,10 +3,15 @@
  * @file
  *
  * This is the front controller.
+ *
+ * This script makes three assumptions:
+ * 1. The '../plugins' directory exists.
+ * 2. The $output global variable exists.
+ * 3. The render() function exists.
  */
 
 /** YAPF Begins here */
-if ($handle = opendir('./plugins')) {
+if (false && $handle = opendir('./plugins')) {
   while (false !== ($entry = readdir($handle))) {
     if ($entry != "." && $entry != "..") {
       // Each plugin file could return plugin information. If so, record it.
@@ -14,16 +19,21 @@ if ($handle = opendir('./plugins')) {
         trigger_error("Error requiring plugin file {$entry}.", E_USER_ERROR);
       }
 
+      // NOTE: The weight ensures proper initialzation order of all plugins.
+
       // Initialize $info for plugins that do not return config data.
       if (!is_array($info)) {
-        $info = array();
+        // The default weight for API plugins is lower to include them first.
+        $info = array('weight' => -10);
       }
         // Set defaults
       $info += array(
-        'weight' => 0,
+        'weight' => 0, // Default, non API weight
         'name' => str_replace('.php', '', $entry),
       );
-      // The weight ensures proper initialzation order of all plugins.
+
+      // Allow multiple plugins to share a weight. These will be ordered by the
+      // way they were read from the filesystem using readdir().
       $plugins[$info['weight']][] = $info;
     }
   }
@@ -32,7 +42,7 @@ if ($handle = opendir('./plugins')) {
   unset($entry);
 
   // Sort the plugins, check requirements and then initialize the ones that
-  // require it.
+  // need initialzation.
 
   ksort($plugins);
 
@@ -66,18 +76,22 @@ if ($handle = opendir('./plugins')) {
   unset($info);
 }
 
-// FIXME: Provide sensible defaults so that errors aren't necessary.
+// Provide defaults so that errors aren't necessary.
 if (!isset($output)) {
-  trigger_error('$output variable was not defined!', E_USER_ERROR);
+  trigger_error('$output variable was not defined!', E_USER_NOTICE);
+  $output = '';
 }
 
 if (!function_exists('render')) {
-  trigger_error('render() function was not defined!', E_USER_ERROR);
+  trigger_error('render() function was not defined!', E_USER_NOTICE);
+  function render($output) {
+    return $output;
+  }
 }
 
 /** End of YAPF */
 
-// Below is the output of the framework ... edit!
+// Below is the output of the framework ... edit, for this is your template!
 ?>
 <html>
   <?= render($output) ?>

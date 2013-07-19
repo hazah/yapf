@@ -2,9 +2,8 @@
 /**
  * @file
  *
- * This plugin helps with the transformation of renderable arrays into HTML.
+ * This API plugin helps with the transformation of renderable arrays into HTML.
  */
-
 function render($content, $plugin = null) {
   global $plugins;
   $output = '';
