@@ -20,7 +20,7 @@ function more_content() {
   global $content, $post_index;
 
   if (empty($content)) {
-    do_action('content');
+    do_action('get_content');
     if (empty($content)) {
       $content = array(
         // This is the basic content object used by this plugin.
@@ -32,8 +32,15 @@ function more_content() {
     }
     $post_index = -1;
   }
+  do_action('content_alter', array(&$content));
 
   return isset($content[++$post_index]);
+}
+
+function &post_cache() {
+  static $cache = array();
+
+  return $cache;
 }
 
 /**
@@ -41,18 +48,29 @@ function more_content() {
  */
 function get_content() {
   global $content, $post, $post_index;
+  $cache = &post_cache();
 
   $post = $content[$post_index];
+
+  // Make sure to alter only once per post.
+  if (!isset($cache[$post_index]) || !$cache[$post_index]) {
+    do_action('content_post_alter', $post);
+    $cache[$post_index] = true;
+  }
 }
 
 /**
  * Reset the current content position for processing.
  */
 function reset_content() {
-  global $post, $post_index;
+  global $content, $post, $post_index;
+  $cache = &post_cache();
 
   $post_index = -1;
   $post = null;
+
+  do_action('reset_content', array(&$content));
+  $cache = array();
 }
 
 /**
@@ -69,13 +87,19 @@ function content_type() {
 function content_title() {
   global $post;
 
-  return $post->title;
+  $title = $post->title;
+  do_action('post_title_alter', $post, array(&$title));
+
+  return $title;
 }
 
 function content_body() {
   global $post;
 
-  return $post->body;
+  $body = $post->body;
+  do_action('post_body_alter', $post, array(&$body));
+
+  return $body;
 }
 
 /**
@@ -133,6 +157,9 @@ if (!function_exists('output_alter_content')) {
 
 /**
  * Implements render_alter_PLUGIN_HOOK().
+ *
+ * These only exist to make sure the rendered HTML is valid and to serve as an
+ * example.
  *
  * @see render API plugin
  */

@@ -17,6 +17,7 @@ function page_title() {
   if (empty($page_title)) {
     do_action('page_title');
   }
+  do_action('page_title_alter');
 
   if (!empty($page_title)) {
     return $page_title;
@@ -32,6 +33,7 @@ function page_head() {
   if (empty($page_head)) {
     do_action('page_head');
   }
+  do_action('page_head_alter');
 
   if (!empty($page_head)) {
     return $page_head;
@@ -47,6 +49,7 @@ function page_body() {
   if (empty($page_body)) {
     do_action('page_body');
   }
+  do_action('page_body_alter');
 
   if (!empty($page_body)) {
     return $page_body;
@@ -113,6 +116,9 @@ if (!function_exists('output_alter_page')) {
 
 /**
  * Implements render_alter_PLUGIN_HOOK().
+ *
+ * These only exist to make sure the rendered HTML is valid and to serve as an
+ * example.
  *
  * @see render API plugin
  */
