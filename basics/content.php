@@ -77,6 +77,12 @@ function get_content() {
   }
 }
 
+function get_content_index() {
+  global $post_index;
+
+  return $post_index;
+}
+
 /**
  * Reset the current content position for processing.
  */
@@ -120,81 +126,6 @@ function content_body() {
   return $body;
 }
 
-/**
- * Plugin initializer.
- */
-function content() {
-  // The content loop.
-  while (more_content()) {
-    get_content();
-    output('title', array(
-      'plugin' => 'content',
-      'content' => content_title(),
-    ));
-    output('body', array(
-      'plugin' => 'content',
-      'content' => content_body(),
-      'format' => content_type(),
-    ));
-  }
-  do_action('content_title_output_alter', array(&$output['content']['title']));
-  do_action('content_body_output_alter', array(&$output['content']['body']));
-
-  // Supply the title & body to any page plugin
-  add_action('page_title', function () {
-    global $page_title;
-
-    // FIXME: This is asumming only one result, needs something for dynamic lists.
-    $page_title = content_title();
-  });
-
-  add_action('page_body', function () {
-    global $page_body;
-    global $output;
-
-    // FIXME: This is asumming only one result, needs something for dynamic lists.
-    $page_body = array('content' => $output['content']);
-
-    unset($output['content']);
-  });
-}
-
-/** TODO: This is only for documentating the API of this plugin.
-if (!function_exists('output_alter_content')) {
-  function output_alter_content($type, $format, $content) {
-    switch ($type) {
-      case 'title':
-        break;
-      case 'body':
-        break;
-    }
-    return $content;
-  }
-}
-*/
-
-// Overridable rendering callbacks.
-
-/**
- * Implements render_alter_PLUGIN_HOOK().
- *
- * These only exist to make sure the rendered HTML is valid and to serve as an
- * example.
- *
- * @see render API plugin
- */
-if (!function_exists('render_alter_content_title')) {
-  function render_alter_content_title($renderable) {
-    return '<h1>' . render($renderable, 'content') . '</h1>';
-  }
-}
-
-if (!function_exists('render_alter_content_body')) {
-  function render_alter_content_body($renderable) {
-    return '<div class="content">' . render($renderable, 'content') . '</div>';
-  }
-}
-
 
 // Plugin info:
 // TODO: Include human readable information so that some other plugin can make
@@ -202,18 +133,31 @@ if (!function_exists('render_alter_content_body')) {
 return array(
   'initialize' => function () {
 
-    add_action('set_content_title', function ($title) {
-      global $content_title;
+    add_action('set_content_handler', function () {
+      global $content_handler;
+      $content_handler->content = function () {
 
-      $content_title = $title;
-      do_action('content_title_alter');
-    });
+        // The content loop.
+        while (more_content()) {
+          get_content();
 
-    add_action('set_content_body', function ($body) {
-      global $content_body;
+          output(array(
+            'plugin' => 'content',
+            'type' => 'title',
+            'content' => content_title(),
+            'index' => get_content_index(),
+          ));
+          output(array(
+            'plugin' => 'content',
+            'type' => 'body',
+            'content' => content_body(),
+            'format' => content_type(),
+            'index' => get_content_index(),
+          ));
+        }
 
-      $content_body = $body;
-      do_action('content_body_alter');
+        do_action('set_page_title', content_title());
+      };
     });
 
   },

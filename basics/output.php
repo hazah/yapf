@@ -39,5 +39,10 @@ function output($plugin, $type, $settings) {
   do_action("output_{$plugin}_{$type}_alter", $plugin, $type, $format);
   do_action("output_{$plugin}_alter", $plugin, $type, $format);
 
-  $output[$plugin][$type][] = $content;
+  if (isset($index)) {
+    $output[$plugin][$type][$index] = $content;
+  }
+  else {
+    $output[$plugin][$type] = $content;
+  }
 }
